@@ -1,0 +1,36 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="keyword-news-scraping",
+    version="0.1.0",
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
+    install_requires=[
+        "aiohttp",
+        "beautifulsoup4",
+        "pandas",
+        "requests",
+        "nltk",
+        "scikit-learn",
+        "openai",
+        "tiktoken",
+        "yfinance",
+        "pykrx",
+        "finance-datareader",
+        "google-cloud-language",
+        "google-cloud-translate",
+        "firebase-admin",
+    ],
+    python_requires=">=3.9",
+    author="Yoonwoo Kye",
+    author_email="mryoonwoo@gmail.com",
+    description="A project for scraping and analyzing news articles from Google News",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/GrilledSalmon/keyword-news-scraping",
+    classifiers=[
+        "Programming Language :: Python :: 3.9",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+) 
