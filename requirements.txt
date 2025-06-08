@@ -9,3 +9,9 @@ pandas>=1.4.0
 # 금융 데이터 (주식 관련 프로젝트용)
 yfinance>=0.1.87
 pykrx>=1.0.40
+
+# 텔레그램 봇
+python-telegram-bot>=20.0
+
+# 환경변수 관리
+python-dotenv>=1.0.0

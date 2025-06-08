@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # 프로젝트 루트 디렉토리
 ROOT_DIR = Path(__file__).parent.parent.parent
@@ -16,6 +17,9 @@ TIMEOUT = 30
 # 제외할 언론사 리스트
 EXCLUDED_SOURCES = ["MSN"]
 
+# 텔레그램 봇 설정
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
 # 데이터 저장 설정
 SAVE_FORMAT = "csv"  # or "json"
