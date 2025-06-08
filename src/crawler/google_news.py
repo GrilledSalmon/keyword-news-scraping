@@ -67,10 +67,14 @@ class GoogleNewsCrawler:
             # 뉴스 기사 정보 추출
             articles = []
             
-            # 구글 뉴스 결과에서 제목 추출 (여러 선택자 시도)
+            # 구글 뉴스 결과에서 제목 추출 (더 정확한 선택자 사용)
             news_items = soup.find_all('div', {'class': 'SoaBEf'}) or \
-                        soup.find_all('div', {'class': 'MjjYud'}) or \
-                        soup.find_all('div', {'data-hveid': True})
+                        soup.find_all('div', {'class': 'MjjYud'})
+            
+            # 뉴스 기사가 없으면 빈 리스트 반환
+            if not news_items:
+                logger.info(f"'{keyword}' {page_num}페이지에서 뉴스 기사를 찾을 수 없습니다.")
+                return []
             
             for item in news_items:
                 try:
@@ -150,9 +154,29 @@ class GoogleNewsCrawler:
                     title = re.sub(r'^["\'\[\]]+|["\'\[\]]+$', '', title)
                     source = re.sub(r'[^\w가-힣\s]', '', source)
                     
+                    # 유효하지 않은 제목 필터링
+                    invalid_titles = [
+                        '필터 및 주제', '검색어(', '뉴스', '이미지', '동영상', '쇼핑',
+                        '지도', '도서', '항공편', '금융', '모든 뉴스', '검색 도구',
+                        '언제든지', '최근', '분류 기준', '관련성', '날짜', '언어',
+                        'Google', '구글', '설정', '개인정보처리방침', '약관', '광고'
+                    ]
+                    
+                    # 제목이 너무 짧거나 유효하지 않은 경우 건너뛰기
+                    if (len(title) < 5 or 
+                        title in invalid_titles or
+                        any(invalid in title for invalid in invalid_titles) or
+                        title.count('(') > title.count(')') or  # 괄호가 맞지 않는 경우
+                        re.match(r'^[^\w가-힣]*$', title)):  # 특수문자만 있는 경우
+                        continue
+                    
+                    # 링크가 구글 내부 링크가 아닌 실제 뉴스 링크인지 확인
+                    if not link or 'google.com' in link or not link.startswith('http'):
+                        continue
+                    
                     articles.append({
                         'title': title,
-                        'content': content[:200] + '...' if len(content) > 200 else content,
+                        'content': content,
                         'link': link,
                         'source': source,
                         'published_time': published_time,
@@ -202,34 +226,6 @@ class GoogleNewsCrawler:
                 break
                 
         return all_articles
-
-    ######################
-    # 문제 있어서 조치 필요
-    def search_news(self, keyword, start_date, end_date):
-        """
-        특정 키워드와 기간에 대한 뉴스를 검색합니다.
-        
-        Args:
-            keyword (str): 검색할 키워드
-            start_date (datetime): 시작 날짜
-            end_date (datetime): 종료 날짜
-            
-        Returns:
-            list: 뉴스 기사 목록
-        """
-        # 기간에 따른 time_period 계산
-        days_diff = (end_date - start_date).days
-        
-        if days_diff <= 1:
-            time_period = "d"  # 하루
-        elif days_diff <= 7:
-            time_period = "w"  # 주
-        elif days_diff <= 30:
-            time_period = "m"  # 월
-        else:
-            time_period = "y"  # 년
-            
-        return self.get_multiple_pages(keyword, max_pages=3, time_period=time_period)
 
     def save_articles(self, articles, keyword):
         """

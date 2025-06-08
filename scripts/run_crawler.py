@@ -1,14 +1,12 @@
 import sys
 from pathlib import Path
-from datetime import datetime, timedelta
 import logging
+from src.crawler.google_news import GoogleNewsCrawler
+from src.config.settings import LOG_DIR, LOG_LEVEL, LOG_FORMAT
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-
-from src.crawler.google_news import GoogleNewsCrawler
-from src.config.settings import LOG_DIR, LOG_LEVEL, LOG_FORMAT
 
 # 로깅 설정
 logging.basicConfig(
@@ -27,23 +25,21 @@ def main():
     
     # 검색할 키워드 목록
     keywords = [
-        "삼성전자",
-        "SK하이닉스",
-        "LG에너지솔루션",
-        "현대차",
-        "기아"
+        "우크라",
+        "이스라엘 이란",
+        "한한령",
+        "크래프톤",
+        "시프트업"
     ]
-    
-    # 검색 기간 설정 (어제부터 오늘까지)
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=1)
+    MAX_PAGES = 3
+    TIME_PERIOD = "d"
     
     # 각 키워드에 대해 뉴스 검색 및 저장
     for keyword in keywords:
         logger.info(f"'{keyword}' 키워드에 대한 뉴스 검색을 시작합니다.")
         
         # 뉴스 검색
-        articles = crawler.search_news(keyword, start_date, end_date)
+        articles = crawler.get_multiple_pages(keyword, MAX_PAGES, TIME_PERIOD)
         
         # 검색 결과 저장
         crawler.save_articles(articles, keyword)
