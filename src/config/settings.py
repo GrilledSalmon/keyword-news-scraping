@@ -13,6 +13,10 @@ CRAWLING_INTERVAL = 3600  # 1시간마다 크롤링
 MAX_RETRIES = 3
 TIMEOUT = 30
 
+# 제외할 언론사 리스트
+EXCLUDED_SOURCES = ["MSN"]
+
+
 # 데이터 저장 설정
 SAVE_FORMAT = "csv"  # or "json"
 ENCODING = "utf-8"

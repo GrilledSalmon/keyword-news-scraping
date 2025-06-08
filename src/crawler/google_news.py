@@ -10,7 +10,8 @@ from ..config.settings import (
     ENCODING,
     LOG_DIR,
     LOG_LEVEL,
-    LOG_FORMAT
+    LOG_FORMAT,
+    EXCLUDED_SOURCES
 )
 
 # 로깅 설정
@@ -172,6 +173,10 @@ class GoogleNewsCrawler:
                     
                     # 링크가 구글 내부 링크가 아닌 실제 뉴스 링크인지 확인
                     if not link or 'google.com' in link or not link.startswith('http'):
+                        continue
+                    
+                    # 제외할 언론사 필터링
+                    if source and any(excluded.lower() in source.lower() for excluded in EXCLUDED_SOURCES):
                         continue
                     
                     articles.append({
