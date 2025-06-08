@@ -46,16 +46,20 @@ async def main_async():
         telegram_sender = None
     
     # 검색할 키워드 목록
-    keywords = [
+    game_keywords = [
         "크래프톤",
         "시프트업",
         "네오위즈",
         "펄어비스",
+        "붉은사막",
         "데브시스터즈",
+    ]
+    keywords = game_keywords + [
         "트럼프",
         "우크라",
         "이스라엘 이란",
-        "WTI"
+        "인도 파키스탄",
+        "WTI",
         "한한령",
         "예림당",
     ]
@@ -76,9 +80,10 @@ async def main_async():
             crawler.save_articles(articles, keyword)
             
             # 텔레그램으로 전송
-            if telegram_sender and articles:
+            if telegram_sender:
                 await send_articles_to_telegram(articles, keyword, telegram_sender)
-                total_articles += len(articles)
+                if articles:  # 기사가 있는 경우에만 카운트 증가
+                    total_articles += len(articles)
                 # 키워드 간 간격 (메시지 정리용)
                 await asyncio.sleep(0.5)
             

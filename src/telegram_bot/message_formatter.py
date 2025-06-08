@@ -3,7 +3,7 @@ import asyncio
 
 logger = logging.getLogger(__name__)
 
-async def format_article_message(articles, keyword, msg_num, total_messages, articles_per_message, start_idx, include_published_time=True):
+async def format_article_message(articles, keyword, msg_num, total_messages, start_idx, include_published_time=True):
     """
     기사 목록을 텔레그램 메시지 형식으로 변환하는 공통 함수
     
@@ -12,7 +12,6 @@ async def format_article_message(articles, keyword, msg_num, total_messages, art
         keyword: 검색 키워드
         msg_num: 현재 메시지 번호
         total_messages: 전체 메시지 수
-        articles_per_message: 메시지당 기사 수
         start_idx: 시작 인덱스
         include_published_time: 발행 시간 포함 여부
     """
@@ -52,6 +51,11 @@ async def send_articles_to_telegram(articles, keyword, telegram_sender):
     """
     if not articles:
         logger.info(f"'{keyword}' 키워드에 대한 새로운 기사가 없습니다.")
+        try:
+            message = f"🔍 <b>[{keyword}]</b>\n\n새로운 기사가 없습니다."
+            await telegram_sender.send_message(message, parse_mode="HTML")
+        except Exception as e:
+            logger.error(f"'{keyword}' 키워드 메시지 전송 중 오류: {e}")
         return
     
     articles_per_message = 10
@@ -61,10 +65,9 @@ async def send_articles_to_telegram(articles, keyword, telegram_sender):
         start_idx = msg_num * articles_per_message
         end_idx = min((msg_num + 1) * articles_per_message, len(articles))
         current_articles = articles[start_idx:end_idx]
-        
         message = await format_article_message(
             current_articles, keyword, msg_num, total_messages,
-            articles_per_message, start_idx, include_published_time=True
+            start_idx, include_published_time=True
         )
         
         if len(message) > 4000:
@@ -104,7 +107,7 @@ async def send_articles_to_telegram_split(articles, keyword, telegram_sender, ar
         
         message = await format_article_message(
             current_articles, keyword, msg_num, total_messages,
-            articles_per_message, start_idx, include_published_time=False
+            start_idx, include_published_time=False
         )
         
         try:
