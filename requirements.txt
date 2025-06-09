@@ -1,17 +1,30 @@
 # 웹 크롤링 필수
-requests>=2.28.0
-beautifulsoup4>=4.11.0
-lxml>=4.9.0
+requests>=2.32.3
+beautifulsoup4>=4.13.4
+lxml>=5.4.0
+httpx>=0.28.1
+curl-cffi>=0.11.2
 
 # 데이터 처리
-pandas>=1.4.0
+pandas>=2.3.0
+numpy>=2.0.2
 
-# 금융 데이터 (주식 관련 프로젝트용)
-yfinance>=0.1.87
-pykrx>=1.0.40
+# 데이터 시각화
+matplotlib>=3.9.4
+
+# 금융 데이터
+yfinance>=0.2.61
+pykrx>=1.0.51
 
 # 텔레그램 봇
-python-telegram-bot>=20.0
+python-telegram-bot>=22.1
+
+# 데이터베이스
+peewee>=3.18.1
 
 # 환경변수 관리
-python-dotenv>=1.0.0
+python-dotenv>=1.1.0
+
+# 유틸리티
+xlrd>=2.0.1
+websockets>=15.0.1
