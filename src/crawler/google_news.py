@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 import re
 from ..config.settings import (
     RAW_DATA_DIR,
@@ -78,10 +79,18 @@ class GoogleNewsCrawler:
                 return []
             
             for item in news_items:
+                if not isinstance(item, Tag):
+                    continue
                 try:
                     # 링크 추출
                     link_elem = item.find('a')
-                    link = link_elem.get('href', '') if link_elem else ''
+                    link = ""
+                    if isinstance(link_elem, Tag):
+                        href_val = link_elem.get('href', '')
+                        if isinstance(href_val, list):
+                            link = ''.join(href_val)
+                        else:
+                            link = str(href_val)
                     
                     # 제목 추출 - HTML 구조에 따라 정확한 선택자 사용
                     title_elem = item.select_one('div[role="heading"]') or \
