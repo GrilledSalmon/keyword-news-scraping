@@ -188,12 +188,16 @@ class GoogleNewsCrawler:
                     if source and any(excluded.lower() in source.lower() for excluded in EXCLUDED_SOURCES):
                         continue
                     
+                    # 시간 문자열을 숫자(시간 단위)로 변환
+                    published_time_number = self._convert_time_to_hours(published_time)
+                    
                     articles.append({
                         'title': title,
                         'content': content,
                         'link': link,
                         'source': source,
                         'published_time': published_time,
+                        'published_time_number': published_time_number,
                         'keyword': keyword,
                         'page': page_num
                     })
@@ -285,4 +289,35 @@ class GoogleNewsCrawler:
             print(f"링크: {article['link'][:50]}..." if len(article['link']) > 50 else f"링크: {article['link']}")
         
         return articles
+
+    @staticmethod
+    def _convert_time_to_hours(time_str: str):
+        """
+        '7시간 전', '10분 전'과 같은 문자열을 시간(float) 단위로 변환한다.
+        분 → 시간\n시간 → 시간\n일 → 24시간\n주 → 7*24시간\n개월 → 30*24시간(평균치)\n년 → 365*24시간(평균치)
+        변환이 불가능하면 None 을 반환한다.
+        """
+        if not time_str:
+            return None
+
+        match = re.match(r"(\d+)\s*(분|시간|일|주|개월|년)\s*전", time_str)
+        if not match:
+            return None
+
+        value = int(match.group(1))
+        unit = match.group(2)
+
+        if unit == '분':
+            return round(value / 60, 3)
+        if unit == '시간':
+            return float(value)
+        if unit == '일':
+            return float(value * 24)
+        if unit == '주':
+            return float(value * 7 * 24)
+        if unit == '개월':
+            return float(value * 30 * 24)
+        if unit == '년':
+            return float(value * 365 * 24)
+        return None
 
