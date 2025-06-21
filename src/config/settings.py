@@ -15,7 +15,7 @@ MAX_RETRIES = 3
 TIMEOUT = 30
 
 # 제외할 언론사 리스트
-EXCLUDED_SOURCES = ["MSN"]
+EXCLUDED_SOURCES = ["MSN", "네이트 뉴스"]
 
 # 텔레그램 봇 설정
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
