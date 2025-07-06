@@ -60,7 +60,7 @@ async def main_async():
     keywords = game_keywords + [
         "트럼프",
         "우크라",
-        "이스라엘 이란",
+        "북한",
         "대왕고래",
         "7광구",
         "알래스카",
