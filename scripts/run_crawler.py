@@ -60,7 +60,7 @@ async def main_async():
     keywords = game_keywords + [
         "트럼프",
         "우크라",
-        "북한",
+        "드론",
         "세종 이재명",
         "대왕고래",
         "7광구",
@@ -68,7 +68,7 @@ async def main_async():
         "한한령",
         "예림당",
     ]
-    MAX_PAGES = 3
+    MAX_PAGES = 2
     TIME_PERIOD = "d"
     
     total_articles = 0
